@@ -1,4 +1,3 @@
-import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 
 import { useKeenSlider } from 'keen-slider/react'
@@ -9,21 +8,22 @@ import { HomeContainer, Product } from '../styles/pages/home'
 
 import 'keen-slider/keen-slider.min.css'
 import Stripe from 'stripe'
+import { GetStaticProps } from 'next'
+import { formatCurrency } from '../utils/formatCurrency'
 
-interface Products {
-  id: string
-  name: string
-  imageUrl: string
-  price: number
-}
 interface HomeProps {
-  products: Products[]
+  products: {
+    id: string
+    name: string
+    imageUrl: string
+    price: string
+  }[]
 }
 
 export default function Home({ products }: HomeProps) {
   const [sliderRef] = useKeenSlider({
     slides: {
-      perView: 3,
+      perView: 'auto',
       spacing: 48,
     },
   })
@@ -32,7 +32,11 @@ export default function Home({ products }: HomeProps) {
     <HomeContainer ref={sliderRef} className="keen-slider">
       {products.map((product) => {
         return (
-          <Product className="keen-slider__slide" key={product.id}>
+          <Product
+            key={product.id}
+            href={`/product/${product.id}`}
+            className="keen-slider__slide"
+          >
             <Image src={product.imageUrl} width={520} height={480} alt="" />
             <footer>
               <strong>{product.name}</strong>
@@ -45,7 +49,7 @@ export default function Home({ products }: HomeProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price'],
   })
@@ -57,14 +61,14 @@ export const getServerSideProps: GetServerSideProps = async () => {
       id: product.id,
       name: product.name,
       imageUrl: product.images[0],
-      price: (price.unit_amount as number) / 100,
+      price: formatCurrency.format((price.unit_amount as number) / 100),
     }
   })
 
-  console.log(response.data)
   return {
     props: {
       products,
     },
+    revalidate: 60 * 60 * 2, // 2 hours
   }
 }
