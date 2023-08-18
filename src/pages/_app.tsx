@@ -1,19 +1,20 @@
-import { Container, Header } from '../styles/pages/app'
+import { Container } from '../styles/pages/app'
 import type { AppProps } from 'next/app'
 import { globalStyles } from '../styles/global'
-import Image from 'next/image'
-
-import logoImg from '../assets/logo.svg'
+import { Header } from '../components/Header'
+import { Cart } from '../components/Cart'
+import { CartContextProvider } from '../contexts/CartContext'
 
 globalStyles()
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Container>
-      <Header>
-        <Image src={logoImg} alt="" />
-      </Header>
-      <Component {...pageProps} />
-    </Container>
+    <CartContextProvider>
+      <Container>
+        <Header />
+        <Cart />
+        <Component {...pageProps} />
+      </Container>
+    </CartContextProvider>
   )
 }

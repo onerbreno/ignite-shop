@@ -14,7 +14,12 @@ export const globalStyles = globalCss({
   },
 
   'body, input, textarea, button': {
+    fontSize: '1rem',
     fontFamily: 'Roboto',
     fontWeight: 400,
+  },
+
+  'h4, p': {
+    lineHeight: 1.6,
   },
 })
