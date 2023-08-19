@@ -11,6 +11,9 @@ import Stripe from 'stripe'
 import { GetStaticProps } from 'next'
 import { formatCurrency } from '../utils/formatCurrency'
 import Head from 'next/head'
+import { Handbag } from '@phosphor-icons/react'
+import { MouseEvent, useContext } from 'react'
+import { CartContext } from '../contexts/CartContext'
 
 interface HomeProps {
   products: {
@@ -22,12 +25,19 @@ interface HomeProps {
 }
 
 export default function Home({ products }: HomeProps) {
+  const { openCart } = useContext(CartContext)
+
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 'auto',
       spacing: 48,
     },
   })
+
+  const handleClick = (e: MouseEvent) => {
+    e.preventDefault()
+    openCart()
+  }
 
   return (
     <>
@@ -50,6 +60,9 @@ export default function Home({ products }: HomeProps) {
                   <strong>{product.name}</strong>
                   <span>{product.price}</span>
                 </div>
+                <button onClick={handleClick}>
+                  <Handbag size={24} weight="bold" />
+                </button>
               </footer>
             </Product>
           )
