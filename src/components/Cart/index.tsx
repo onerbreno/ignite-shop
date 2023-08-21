@@ -13,7 +13,7 @@ import { useContext } from 'react'
 import { CartContext } from '@/src/contexts/CartContext'
 
 export function Cart() {
-  const { isCartVisible, closeCart } = useContext(CartContext)
+  const { isCartVisible, items, closeCart, itemCount } = useContext(CartContext)
 
   return (
     <CartContainer isVisible={isCartVisible}>
@@ -25,7 +25,9 @@ export function Cart() {
         <CartProductsList>
           <h4>Sacola de compras</h4>
           <ul>
-            <CartItem />
+            {items.map((item) => (
+              <CartItem key={item.id} item={item} />
+            ))}
           </ul>
         </CartProductsList>
 
@@ -33,7 +35,9 @@ export function Cart() {
           <CartSummary>
             <span>
               <p>Quantidade</p>
-              <p>1 item</p>
+              <p>
+                {itemCount} {itemCount !== 1 ? 'itens' : 'item'}
+              </p>
             </span>
             <CartSummaryPriceContainer>
               <p>Valor total</p>

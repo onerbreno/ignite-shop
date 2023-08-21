@@ -35,7 +35,9 @@ export const CartContent = styled('div', {
   height: '100%',
 
   h4: {
-    fontSize: '$lg',
+    fontSize: '$md',
+    fontWeight: '400',
+    color: '$gray300',
   },
 })
 
@@ -56,6 +58,11 @@ export const CloseButton = styled('button', {
 export const CartProductsList = styled('ul', {
   display: 'grid',
   gap: '2.25rem',
+
+  ul: {
+    display: 'grid',
+    gap: '1.5rem',
+  },
 })
 
 export const CartFooter = styled('footer', {

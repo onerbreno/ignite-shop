@@ -25,7 +25,7 @@ interface HomeProps {
 }
 
 export default function Home({ products }: HomeProps) {
-  const { openCart } = useContext(CartContext)
+  const { openCart, addNewItem } = useContext(CartContext)
 
   const [sliderRef] = useKeenSlider({
     slides: {
@@ -35,6 +35,7 @@ export default function Home({ products }: HomeProps) {
   })
 
   const handleClick = (e: MouseEvent) => {
+    e.stopPropagation()
     e.preventDefault()
     openCart()
   }
@@ -60,7 +61,12 @@ export default function Home({ products }: HomeProps) {
                   <strong>{product.name}</strong>
                   <span>{product.price}</span>
                 </div>
-                <button onClick={handleClick}>
+                <button
+                  onClick={() => {
+                    addNewItem(product)
+                    return handleClick
+                  }}
+                >
                   <Handbag size={24} weight="bold" />
                 </button>
               </footer>
