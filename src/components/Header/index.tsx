@@ -7,7 +7,7 @@ import { CartContext } from '@/src/contexts/CartContext'
 import Link from 'next/link'
 
 export function Header() {
-  const { openCart } = useContext(CartContext)
+  const { openCart, numberOfItems } = useContext(CartContext)
   return (
     <HeaderContainer>
       <Link href={'/'}>
@@ -15,7 +15,7 @@ export function Header() {
       </Link>
       <ButtonCart onClick={openCart}>
         <Handbag size={24} />
-        <span>1</span>
+        {numberOfItems ? <span>{numberOfItems}</span> : ''}
       </ButtonCart>
     </HeaderContainer>
   )
