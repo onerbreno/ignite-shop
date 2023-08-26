@@ -1,6 +1,14 @@
 import axios from 'axios'
-import { ReactNode, createContext, useState } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { formatCurrency } from '../utils/formatCurrency'
+
+import version from '@/package.json'
 
 interface Item {
   id: string
@@ -25,6 +33,7 @@ interface CartContextProps {
   removeItemCart: (Item) => void
   addNewItem: (Item) => void
   createCheckoutSession: () => void
+  clearItems: () => void
 }
 interface CartContextProviderProps {
   children: ReactNode
@@ -38,6 +47,16 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
     useState(false)
 
+  useEffect(() => {
+    const storedItems = localStorage.getItem(
+      `ignite-shop:items-state-${version}`,
+    )
+
+    if (storedItems) {
+      setItems(JSON.parse(storedItems))
+    }
+  }, [])
+
   const numberOfItems = items.length
 
   const totalPriceCart =
@@ -45,23 +64,52 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
 
   const formattedTotalPriceCart = formatCurrency.format(totalPriceCart)
 
-  const openCart = () => {
+  function updateLocalStorage(updatedItems) {
+    const stateJSON = JSON.stringify(updatedItems)
+
+    localStorage.setItem(`ignite-shop:items-state-${version}`, stateJSON)
+  }
+
+  const openCart = useCallback(async () => {
     setIsCartVisible(true)
-  }
+  }, [])
 
-  const closeCart = () => {
+  const closeCart = useCallback(async () => {
     setIsCartVisible(false)
-  }
+  }, [])
 
-  function removeItemCart(item: Item) {
-    setItems((state) => state.filter((itemCart) => itemCart.id === item.id))
-  }
+  const removeItemCart = useCallback(async (item: Item) => {
+    setItems((state) => {
+      const updatedItems = state.filter(({ id }) => id !== item.id)
 
-  function addNewItem(item: Item) {
-    setItems((state) => [...state, item])
-  }
+      updateLocalStorage(updatedItems)
 
-  async function createCheckoutSession() {
+      return updatedItems
+    })
+  }, [])
+
+  const clearItems = useCallback(async () => {
+    setItems([])
+    updateLocalStorage([])
+  }, [])
+
+  const addNewItem = useCallback(
+    async (newItem: Item) => {
+      const isItemInCart = items.find(({ id }) => id === newItem.id)
+
+      if (!isItemInCart) {
+        setItems((state) => {
+          const updatedItems = [...state, newItem]
+          updateLocalStorage(updatedItems)
+
+          return updatedItems
+        })
+      }
+    },
+    [items],
+  )
+
+  const createCheckoutSession = useCallback(async () => {
     const products = items.map((item) => {
       return {
         price: item.defaultPriceId,
@@ -80,7 +128,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
       setIsCreatingCheckoutSession(false)
       alert('Falha ao redirecionar ao checkout')
     }
-  }
+  }, [items])
 
   return (
     <CartContext.Provider
@@ -95,6 +143,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         removeItemCart,
         addNewItem,
         createCheckoutSession,
+        clearItems,
       }}
     >
       {children}
