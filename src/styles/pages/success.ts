@@ -38,11 +38,8 @@ export const SuccessContainer = styled('main', {
 })
 
 export const ImageContainer = styled('main', {
-  width: '100%',
-  maxWidth: 130,
-  height: 145,
   background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
-  borderRadius: 8,
+  borderRadius: 1000,
   padding: '0.25rem',
 
   marginTop: '4rem',
@@ -54,4 +51,14 @@ export const ImageContainer = styled('main', {
   img: {
     objectFit: 'cover',
   },
+
+  boxShadow: '0px 0px 60px 0px rgba(0, 0, 0, 0.80)',
+
+  '& + &': {
+    marginLeft: '-3rem',
+  },
+})
+
+export const SuccessProductImages = styled('div', {
+  display: 'flex',
 })

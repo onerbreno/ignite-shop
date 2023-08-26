@@ -1,20 +1,34 @@
 import Link from 'next/link'
-import { ImageContainer, SuccessContainer } from '../styles/pages/success'
+import {
+  ImageContainer,
+  SuccessContainer,
+  SuccessProductImages,
+} from '../styles/pages/success'
 import { GetServerSideProps } from 'next'
 import { stripe } from '../lib/stripe'
 import Stripe from 'stripe'
 import Image from 'next/image'
 import Head from 'next/head'
+import { CartContext } from '../contexts/CartContext'
+import { useEffect, useContext } from 'react'
+
+interface Product {
+  name: string
+  imageUrl: string
+}
 
 interface SuccessProps {
   customerName: string
-  product: {
-    name: string
-    imageUrl: string
-  }
+  products: Product[]
 }
 
-export default function Success({ customerName, product }: SuccessProps) {
+export default function Success({ customerName, products }: SuccessProps) {
+  const { clearItems } = useContext(CartContext)
+
+  useEffect(() => {
+    clearItems()
+  }, [clearItems])
+
   return (
     <>
       <Head>
@@ -24,13 +38,23 @@ export default function Success({ customerName, product }: SuccessProps) {
       <SuccessContainer>
         <h1>Compra efetuada!</h1>
 
-        <ImageContainer>
-          <Image src={product.imageUrl} alt="" width={120} height={110} />
-        </ImageContainer>
+        <SuccessProductImages>
+          {products.map((product) => (
+            <ImageContainer key={product.name}>
+              <Image
+                src={product.imageUrl}
+                alt={product.name}
+                width={140}
+                height={140}
+              />
+            </ImageContainer>
+          ))}
+        </SuccessProductImages>
 
         <p>
-          Uhuul <strong>{customerName}</strong>, sua{' '}
-          <strong>{product.name}</strong> já está a caminho da sua casa.
+          Uhuul <strong>{customerName}</strong>, sua compra{' '}
+          {products.length !== 1 ? `de ${products.length} camisetas` : ''} já
+          está a caminho da sua casa!
         </p>
 
         <Link href="/">Voltar ao catálogo</Link>
@@ -56,15 +80,18 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   })
 
   const customerName = session.customer_details.name
-  const product = session.line_items.data[0].price.product as Stripe.Product
+  const products = session.line_items.data.map(({ price }) => {
+    const itemProduct = price.product as Stripe.Product
+    return {
+      name: itemProduct.name,
+      imageUrl: itemProduct.images[0],
+    }
+  })
 
   return {
     props: {
       customerName,
-      product: {
-        name: product.name,
-        imageUrl: product.images[0],
-      },
+      products,
     },
   }
 }
