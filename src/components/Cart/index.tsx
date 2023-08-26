@@ -13,7 +13,19 @@ import { useContext } from 'react'
 import { CartContext } from '@/src/contexts/CartContext'
 
 export function Cart() {
-  const { isCartVisible, items, closeCart, itemCount } = useContext(CartContext)
+  const {
+    isCartVisible,
+    items,
+    numberOfItems,
+    formattedTotalPriceCart,
+    isCreatingCheckoutSession,
+    createCheckoutSession,
+    closeCart,
+  } = useContext(CartContext)
+
+  function handleCreateCheckoutSession() {
+    createCheckoutSession()
+  }
 
   return (
     <CartContainer isVisible={isCartVisible}>
@@ -22,13 +34,12 @@ export function Cart() {
           <X weight="bold" size={24} />
         </CloseButton>
 
+        <h4>Sacola de compras</h4>
+
         <CartProductsList>
-          <h4>Sacola de compras</h4>
-          <ul>
-            {items.map((item) => (
-              <CartItem key={item.id} item={item} />
-            ))}
-          </ul>
+          {items.map((item) => (
+            <CartItem key={item.id + Math.random()} item={item} />
+          ))}
         </CartProductsList>
 
         <CartFooter>
@@ -36,16 +47,21 @@ export function Cart() {
             <span>
               <p>Quantidade</p>
               <p>
-                {itemCount} {itemCount !== 1 ? 'itens' : 'item'}
+                {numberOfItems} {numberOfItems !== 1 ? 'itens' : 'item'}
               </p>
             </span>
             <CartSummaryPriceContainer>
               <p>Valor total</p>
-              <strong>R$ 79,90</strong>
+              <strong>{formattedTotalPriceCart}</strong>
             </CartSummaryPriceContainer>
           </CartSummary>
 
-          <button>Finalizar compra</button>
+          <button
+            disabled={isCreatingCheckoutSession}
+            onClick={handleCreateCheckoutSession}
+          >
+            Finalizar compra
+          </button>
         </CartFooter>
       </CartContent>
     </CartContainer>

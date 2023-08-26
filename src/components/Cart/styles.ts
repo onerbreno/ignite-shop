@@ -5,7 +5,8 @@ export const CartContainer = styled('section', {
 
   maxWidth: '30rem',
   width: '100%',
-  height: '100%',
+  height: '100vh',
+
   background: '$gray800',
 
   position: 'fixed',
@@ -31,7 +32,7 @@ export const CartContent = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-
+  gap: '2.25rem',
   height: '100%',
 
   h4: {
@@ -55,13 +56,30 @@ export const CloseButton = styled('button', {
   },
 })
 
-export const CartProductsList = styled('ul', {
-  display: 'grid',
-  gap: '2.25rem',
+export const CartProductsList = styled('div', {
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  overflowY: 'auto',
+  borderRadius: 8,
 
-  ul: {
-    display: 'grid',
-    gap: '1.5rem',
+  gap: '1.5rem',
+
+  '&::-webkit-scrollbar': {
+    width: '12px',
+    borderRadius: '20px',
+  },
+
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: '$gray900',
+    borderRadius: '20px',
+  },
+
+  '&::-webkit-scrollbar-thumb': {
+    background: '$gray800',
+    border: '3px solid $gray900',
+    borderRadius: '20px',
   },
 })
 

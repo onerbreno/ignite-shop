@@ -8,9 +8,9 @@ import {
   ProductContainer,
   ProductDetails,
 } from '@/src/styles/pages/product'
-import axios from 'axios'
-import { useState } from 'react'
+import { MouseEvent, useContext } from 'react'
 import Head from 'next/head'
+import { CartContext } from '@/src/contexts/CartContext'
 
 interface ProductProps {
   product: {
@@ -24,26 +24,9 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false)
+  const { addNewItem } = useContext(CartContext)
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true)
-
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId,
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-    } catch (err) {
-      setIsCreatingCheckoutSession(false)
-
-      alert('Falha ao redirecionar ao checkout')
-    }
-  }
+  const handleClick = () => addNewItem(product)
 
   return (
     <>
@@ -63,12 +46,7 @@ export default function Product({ product }: ProductProps) {
 
           <p>{product.description}</p>
 
-          <button
-            disabled={isCreatingCheckoutSession}
-            onClick={handleBuyProduct}
-          >
-            Comprar agora
-          </button>
+          <button onClick={handleClick}>Colocar na sacola</button>
         </ProductDetails>
       </ProductContainer>
     </>
