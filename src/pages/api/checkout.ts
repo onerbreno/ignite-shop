@@ -6,7 +6,6 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const { products } = req.body
-  console.log(products)
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed.' })
   }

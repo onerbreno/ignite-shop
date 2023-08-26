@@ -65,22 +65,6 @@ export const CartProductsList = styled('div', {
   borderRadius: 8,
 
   gap: '1.5rem',
-
-  '&::-webkit-scrollbar': {
-    width: '12px',
-    borderRadius: '20px',
-  },
-
-  '&::-webkit-scrollbar-track': {
-    backgroundColor: '$gray900',
-    borderRadius: '20px',
-  },
-
-  '&::-webkit-scrollbar-thumb': {
-    background: '$gray800',
-    border: '3px solid $gray900',
-    borderRadius: '20px',
-  },
 })
 
 export const CartFooter = styled('footer', {

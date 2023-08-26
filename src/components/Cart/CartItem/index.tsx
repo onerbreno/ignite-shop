@@ -22,7 +22,7 @@ interface CartItemProps {
 export function CartItem({ item }: CartItemProps) {
   const { removeItemCart } = useContext(CartContext)
 
-  function handleRemoveItem(item) {
+  function handleRemoveItem() {
     removeItemCart(item)
   }
 

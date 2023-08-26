@@ -11,10 +11,10 @@ export function Header() {
   return (
     <HeaderContainer>
       <Link href={'/'}>
-        <Image src={logoImg} alt="" />
+        <Image src={logoImg} alt="" height={52} width={130} />
       </Link>
       <ButtonCart onClick={openCart}>
-        <Handbag size={24} />
+        <Handbag size={24} weight="bold" />
         {numberOfItems ? <span>{numberOfItems}</span> : ''}
       </ButtonCart>
     </HeaderContainer>

@@ -24,7 +24,12 @@ export function Product({ product }: ProductProps) {
       className="keen-slider__slide"
       prefetch={false}
     >
-      <Image src={product.imageUrl} width={520} height={480} alt="" />
+      <Image
+        src={product.imageUrl}
+        width={520}
+        height={480}
+        alt={product.name}
+      />
       <footer>
         <div>
           <strong>{product.name}</strong>
